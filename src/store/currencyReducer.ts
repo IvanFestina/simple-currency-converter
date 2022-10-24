@@ -1,17 +1,42 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const applyForm = createAsyncThunk(
-  'requestForm/currency',
-  async ({ params }: any, thunkAPI) => {
-    const secondsToWait = 2000;
+import { exchangeAPI } from '../api/api';
+
+export const getLatestRates = createAsyncThunk(
+  'currency/getLatestRates',
+  async (params: getLatestRatesParamsType, thunkAPI) => {
+    try {
+      // BASE - three-letter currency code of your preferred base currency.
+      // SYMBOLS - list of comma-separated currency codes to limit output currencies.
+      const res = await exchangeAPI.getLatest(params.base, params.symbols);
+
+      return res.data.rates;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('Error', e);
+
+      return thunkAPI.rejectWithValue(e);
+    }
+  },
+);
+
+export const getConvert = createAsyncThunk(
+  'currency/getConvert',
+  async (params: getConvertParamsType, thunkAPI) => {
+    const resultToFixed = 2;
 
     try {
-      const res = await new Promise(resolve => {
-        setTimeout(() => resolve(params), secondsToWait);
-      });
+      const res = await exchangeAPI.getConvert(params.amount, params.from, params.to);
+      const { from, fromAmount } = {
+        from: res.data.query.from,
+        fromAmount: res.data.query.amount,
+      };
+      const { to, toAmount } = {
+        to: res.data.query.to,
+        toAmount: res.data.result.toFixed(resultToFixed),
+      };
 
-      // eslint-disable-next-line no-console
-      console.log(JSON.stringify(res));
+      return `${fromAmount} ${from} = ${toAmount} ${to}`;
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log('Error', e);
@@ -22,6 +47,8 @@ export const applyForm = createAsyncThunk(
 );
 
 const initialState = {
+  latestRates: {},
+  conversionResult: '' as string,
   appIsLoading: false as boolean,
 };
 
@@ -31,14 +58,22 @@ export const currencySlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(applyForm.pending, (state, action) => {
+      .addCase(getLatestRates.pending, (state, action) => {
         state.appIsLoading = true;
       })
-      .addCase(applyForm.fulfilled, (state, action) => {
+      .addCase(getLatestRates.fulfilled, (state, action) => {
+        state.appIsLoading = false;
+        state.latestRates = action.payload;
+      })
+      .addCase(getLatestRates.rejected, (state, action) => {
         state.appIsLoading = false;
       })
-      .addCase(applyForm.rejected, (state, action) => {
+      .addCase(getConvert.pending, (state, action) => {
+        state.appIsLoading = true;
+      })
+      .addCase(getConvert.fulfilled, (state, action) => {
         state.appIsLoading = false;
+        state.conversionResult = action.payload;
       });
   },
 });
@@ -48,4 +83,12 @@ export const currencySlice = createSlice({
 export default currencySlice.reducer;
 //
 // // T Y P E S
-type CitiesType = {};
+type getConvertParamsType = {
+  amount: string;
+  to: string;
+  from: string;
+};
+type getLatestRatesParamsType = {
+  base: string;
+  symbols?: string;
+};

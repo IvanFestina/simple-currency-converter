@@ -12,12 +12,10 @@ export const PATH = {
 };
 
 export const RoutesApp = () => (
-  <div className="Routes">
-    <Routes>
-      <Route path="/" element={<Navigate to={PATH.CURRENCY_EXCHANGE} />} />
-      <Route path={PATH.CURRENCY_EXCHANGE} element={<CurrencyExchange />} />
-      <Route path={PATH.CURRENCY_CHART} element={<CurrencyChart />} />
-      <Route path="*" element={<Error404Page />} />
-    </Routes>
-  </div>
+  <Routes>
+    <Route path="/" element={<Navigate to={PATH.CURRENCY_EXCHANGE} />} />
+    <Route path={PATH.CURRENCY_EXCHANGE} element={<CurrencyExchange />} />
+    <Route path={PATH.CURRENCY_CHART} element={<CurrencyChart />} />
+    <Route path="*" element={<Error404Page />} />
+  </Routes>
 );

@@ -2,12 +2,19 @@
 
 .wrapperApp {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
+  position: relative;
 
   .content {
-    padding-top: 63px;
-    background-color: $mainBGC;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    @media (max-width: 600px) {
+        width: 100%;
+      }
   }
 }
 

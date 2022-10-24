@@ -5,7 +5,9 @@
   grid-template-columns: 180px 180px;
   width: 100%;
   justify-content: center;
-  position: fixed;
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 11;
   height: 64px;
 
