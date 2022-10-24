@@ -20,7 +20,6 @@ const CurrencyChart = () => {
     .map(currency => (
       <div className={s.table} key={currency[0]}>
         <p>{currency[0]}</p>
-        {/* @ts-ignore */}
         <p>{currency[1].toFixed(2)}</p>
       </div>
     ));
@@ -43,7 +42,7 @@ const CurrencyChart = () => {
           onChange={onChangeBaseCurrency}
           options={currencyOptions}
         />
-        {appIsLoading ? <div>Loading...</div> : currencyToDisplay}
+        {appIsLoading ? <div>Loading... please wait</div> : currencyToDisplay}
       </div>
     </div>
   );

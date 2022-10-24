@@ -47,7 +47,7 @@ export const getConvert = createAsyncThunk(
 );
 
 const initialState = {
-  latestRates: {},
+  latestRates: {} as { [key: string]: number },
   conversionResult: '' as string,
   appIsLoading: false as boolean,
 };
@@ -74,6 +74,9 @@ export const currencySlice = createSlice({
       .addCase(getConvert.fulfilled, (state, action) => {
         state.appIsLoading = false;
         state.conversionResult = action.payload;
+      })
+      .addCase(getConvert.rejected, (state, action) => {
+        state.appIsLoading = false;
       });
   },
 });
